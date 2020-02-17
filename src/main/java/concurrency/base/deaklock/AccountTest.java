@@ -19,13 +19,13 @@ public class AccountTest {
     public void transfer(AccountTest tar, int amount) throws InterruptedException {
         while (true) {
             System.out.println(Thread.currentThread().getName());
-            Random random = new Random();
-            if (this.lock.tryLock(random.nextInt(2000), TimeUnit.MILLISECONDS)){
+            if (this.lock.tryLock()){
                 try {
-                    if (tar.lock.tryLock(random.nextInt(5000), TimeUnit.MILLISECONDS)) {
+                    if (tar.lock.tryLock()) {
                         try {
                             this.balance -= amount;
                             tar.balance += amount;
+                            break;
                         } finally {
                             tar.lock.unlock();
                         }
@@ -34,6 +34,8 @@ public class AccountTest {
                     this.lock.unlock();
                 }
             }
+
+            Thread.sleep((long)(Math.random() * 100));
         }
     }
 
@@ -56,6 +58,6 @@ public class AccountTest {
         countDownLatch.await();
         System.out.println("from balance:" + from.balance);
         System.out.println("to balance:" + to.balance);
-        System.out.println("time(mill):" + (start - System.currentTimeMillis()));
+        System.out.println("time(mill):" + ( System.currentTimeMillis() - start));
     }
 }
