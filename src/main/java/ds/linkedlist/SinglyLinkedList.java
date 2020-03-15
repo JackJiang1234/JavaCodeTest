@@ -2,6 +2,14 @@ package ds.linkedlist;
 
 import java.util.Arrays;
 
+/*
+单链表反转
+链表中环的检测
+两个有序的链表合并
+删除链表倒数第 n 个结点
+求链表的中间结点
+LeetCode对应编号 206，141，21，19，876
+*/
 public class SinglyLinkedList {
 
     private Node head;
@@ -28,6 +36,82 @@ public class SinglyLinkedList {
         }
     }
 
+    public Node middleNode(Node head) {
+        Node slow, fast;
+        slow = head;
+        fast = head;
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        return slow;
+    }
+
+    public Node removeNthFromEnd(Node head, int n) {
+        Node first = head;
+        while (n != 0) {
+            first = first.next;
+            n--;
+        }
+
+        //delete head
+        if (first == null) {
+            return head.next;
+        }
+
+        Node second = head;
+        while (first.next != null) {
+            second = second.next;
+            first = first.next;
+        }
+
+        second.next = second.next.next;
+        return head;
+    }
+
+    public boolean hasCycle(Node head) {
+        if (head == null) {
+            return false;
+        }
+
+        Node slow, fast;
+        slow = head;
+        fast = head.next;
+        while (slow != fast && fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow == fast;
+    }
+
+    public Node mergeTwoOrderedLists(Node left, Node right) {
+        Node leftCur = left;
+        Node rightCur = right;
+        Node sentinel = new Node(0);
+        Node cur = sentinel;
+
+        while (leftCur != null && rightCur != null) {
+            if (leftCur.value <= rightCur.value) {
+                cur.next = leftCur;
+                leftCur = leftCur.next;
+            } else {
+                cur.next = rightCur;
+                rightCur = rightCur.next;
+            }
+            cur = cur.next;
+        }
+
+        if (leftCur != null) {
+            cur.next = leftCur;
+        }
+        if (rightCur != null) {
+            cur.next = rightCur;
+        }
+
+        return sentinel.next;
+    }
+
     public void clear() {
         this.head = null;
     }
@@ -36,6 +120,7 @@ public class SinglyLinkedList {
         this.printImpl(this.head);
     }
 
+    /*使用三个指针翻转链表*/
     public Node inverse(Node node) {
         Node pre = null;
         Node cur = node;
@@ -49,6 +134,7 @@ public class SinglyLinkedList {
 
         return pre;
     }
+
 
     /*判断回文
      * 使用快慢指针
