@@ -12,7 +12,7 @@ LeetCode对应编号 206，141，21，19，876
 */
 public class SinglyLinkedList {
 
-    private Node head;
+    private ListNode head;
 
     public SinglyLinkedList() {
     }
@@ -24,23 +24,23 @@ public class SinglyLinkedList {
     }
 
     public void insertTail(int val) {
-        Node newNode = new Node(val);
+        ListNode newListNode = new ListNode(val);
         if (head == null) {
-            this.head = newNode;
+            this.head = newListNode;
         } else {
-            Node cur = this.head;
+            ListNode cur = this.head;
             while (cur.next != null) {
                 cur = cur.next;
             }
-            cur.next = new Node(val);
+            cur.next = new ListNode(val);
         }
     }
 
-    public Node middleNode(Node head) {
-        Node slow, fast;
+    public ListNode middleNode(ListNode head) {
+        ListNode slow, fast;
         slow = head;
         fast = head;
-        while(fast != null && fast.next != null){
+        while (fast != null && fast.next != null) {
             slow = slow.next;
             fast = fast.next.next;
         }
@@ -48,8 +48,8 @@ public class SinglyLinkedList {
         return slow;
     }
 
-    public Node removeNthFromEnd(Node head, int n) {
-        Node first = head;
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode first = head;
         while (n != 0) {
             first = first.next;
             n--;
@@ -60,7 +60,7 @@ public class SinglyLinkedList {
             return head.next;
         }
 
-        Node second = head;
+        ListNode second = head;
         while (first.next != null) {
             second = second.next;
             first = first.next;
@@ -70,12 +70,12 @@ public class SinglyLinkedList {
         return head;
     }
 
-    public boolean hasCycle(Node head) {
+    public boolean hasCycle(ListNode head) {
         if (head == null) {
             return false;
         }
 
-        Node slow, fast;
+        ListNode slow, fast;
         slow = head;
         fast = head.next;
         while (slow != fast && fast != null && fast.next != null) {
@@ -85,11 +85,11 @@ public class SinglyLinkedList {
         return slow == fast;
     }
 
-    public Node mergeTwoOrderedLists(Node left, Node right) {
-        Node leftCur = left;
-        Node rightCur = right;
-        Node sentinel = new Node(0);
-        Node cur = sentinel;
+    public ListNode mergeTwoOrderedLists(ListNode left, ListNode right) {
+        ListNode leftCur = left;
+        ListNode rightCur = right;
+        ListNode sentinel = new ListNode(0);
+        ListNode cur = sentinel;
 
         while (leftCur != null && rightCur != null) {
             if (leftCur.value <= rightCur.value) {
@@ -121,10 +121,10 @@ public class SinglyLinkedList {
     }
 
     /*使用三个指针翻转链表*/
-    public Node inverse(Node node) {
-        Node pre = null;
-        Node cur = node;
-        Node next;
+    public ListNode inverse(ListNode listNode) {
+        ListNode pre = null;
+        ListNode cur = listNode;
+        ListNode next;
         while (cur != null) {
             next = cur.next;
             cur.next = pre;
@@ -147,7 +147,7 @@ public class SinglyLinkedList {
             return true;
         }
 
-        Node slow, fast;
+        ListNode slow, fast;
         slow = this.head;
         fast = this.head.next;
 
@@ -156,15 +156,15 @@ public class SinglyLinkedList {
             slow = slow.next;
         }
 
-        Node left = this.head;
-        Node right = this.inverse(slow.next);
+        ListNode left = this.head;
+        ListNode right = this.inverse(slow.next);
 
         return matchOrInclude(left, right);
     }
 
-    private boolean matchOrInclude(Node left, Node right) {
-        Node p = left;
-        Node q = right;
+    private boolean matchOrInclude(ListNode left, ListNode right) {
+        ListNode p = left;
+        ListNode q = right;
         boolean flag = false;
         while (p != null && q != null) {
             if (p.value == q.value) {
@@ -180,13 +180,55 @@ public class SinglyLinkedList {
         return flag;
     }
 
-    private void printImpl(Node head) {
-        Node cur = this.head;
+    private void printImpl(ListNode head) {
+        ListNode cur = this.head;
         while (cur != null) {
             System.out.print(cur.getValue() + ",");
             cur = cur.next;
         }
     }
+
+    public ListNode swapPairsUseRecursion(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+
+        ListNode first = head;
+        ListNode second = head.next;
+
+        first.next = swapPairsUseRecursion(second.next);
+        second.next = first;
+
+        return second;
+    }
+
+    public ListNode swapPairs(ListNode head) {
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+
+        ListNode prevNode = dummy;
+
+        while ((head != null) && (head.next != null)) {
+
+            // Nodes to be swapped
+            ListNode firstNode = head;
+            ListNode secondNode = head.next;
+
+            // Swapping
+            prevNode.next = secondNode;
+            firstNode.next = secondNode.next;
+            secondNode.next = firstNode;
+
+            // Reinitializing the head and prevNode for next swap
+            prevNode = firstNode;
+            head = firstNode.next; // jump
+        }
+
+        // Return the new head node.
+        return dummy.next;
+    }
+
+
 
     public static void main(String[] args) {
         testPalindrom(1);
@@ -212,15 +254,15 @@ public class SinglyLinkedList {
         linkedList.print();
     }
 
-    public static class Node {
+    public static class ListNode {
         private int value;
-        private Node next;
+        private ListNode next;
 
-        public Node(int val) {
+        public ListNode(int val) {
             this(val, null);
         }
 
-        public Node(int val, Node next) {
+        public ListNode(int val, ListNode next) {
             this.value = val;
             this.next = next;
         }
@@ -229,7 +271,7 @@ public class SinglyLinkedList {
             return value;
         }
 
-        public Node getNext() {
+        public ListNode getNext() {
             return this.next;
         }
     }
