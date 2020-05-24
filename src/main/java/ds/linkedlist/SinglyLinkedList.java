@@ -1,6 +1,8 @@
 package ds.linkedlist;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Collections;
 
 /*
 单链表反转
@@ -46,6 +48,16 @@ public class SinglyLinkedList {
         }
 
         return slow;
+    }
+
+    public int[] reversePrint(ListNode head) {
+        ArrayDeque<Integer> deque = new ArrayDeque<>();
+        while(head != null){
+            deque.addLast(head.value);
+            head = head.next;
+        }
+
+        return deque.stream().mapToInt(Integer::intValue).toArray();
     }
 
     public ListNode removeNthFromEnd(ListNode head, int n) {
