@@ -2,29 +2,94 @@ package ds.backtrace;
 
 public class NPackage {
 
-    public int maxW = Integer.MIN_VALUE; //存储背包中物品总重量的最大值
+    public static void main(String[] args) {
+        NPackage p = new NPackage();
+        //p.f(0, 0);
+        //System.out.println(p.maxW);
+        int[] weights = new int[]{2, 2, 4, 6, 3};
+        int ret = p.knapsack(weights, 10);
+        System.out.println(ret);
+    }
 
-    /*
-    *
-    * 对于每个物品来说，都有两种选择，装进背包或者不装进背包。
-    * 对于 n 个物品来说，总的装法就有 2^n 种，去掉总重量超过 Wkg 的，
-    * 从剩下的装法中选择总重量最接近 Wkg 的
-    * */
+    private int maxW = Integer.MIN_VALUE; // 结果放到maxW中
+    private int[] weight = {2, 2, 4, 6, 3};  // 物品重量
+    private int n = 5; // 物品个数
+    private int w = 9; // 背包承受的最大重量
+    private boolean[][] mem = new boolean[5][10]; // 备忘录，默认值false
 
-    // cw表示当前已经装进去的物品的重量和；i表示考察到哪个物品了；
-    // w背包重量；items表示每个物品的重量；n表示物品个数
-    // 假设背包可承受重量100，物品个数10，物品重量存储在数组a中，那可以这样调用函数：
-    // f(0, 0, a, 10, 100)
-    public void f(int i, int cw, int[] items, int n, int w) {
-        if (cw == w || i == n) { // cw==w表示装满了;i==n表示已经考察完所有的物品
+    public void f(int i, int cw) { // 调用f(0, 0)
+        if (cw == w || i == n) { // cw==w表示装满了，i==n表示物品都考察完了
             if (cw > maxW) maxW = cw;
             return;
         }
-        f(i + 1, cw, items, n, w);
-        if (cw + items[i] <= w) {// 已经超过可以背包承受的重量的时候，就不要再装了
-            f(i + 1, cw + items[i], items, n, w);
+
+        /*标记[i][cw]已经做过就可以了，因为前面这条路径已计算过，maxW的计算已包含*/
+        if (mem[i][cw]) {
+            return; // 重复状态
+        } else {
+            mem[i][cw] = true; // 记录(i, cw)这个状态
+        }
+
+        f(i + 1, cw); // 选择不装第i个物品
+        if (cw + weight[i] <= w) {
+            f(i + 1, cw + weight[i]); // 选择装第i个物品
         }
     }
 
+    public int knapsack(int[] weight, int w) {
+        int n = weight.length;
+        boolean[][] states = new boolean[n][w + 1];
+        states[0][0] = true;
+        if (weight[0] <= w) {
+            states[0][weight[0]] = true;
+        }
 
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j <= w; j++) {
+                if (states[i - 1][j]) {
+                    // 不把第i个物品放入背包
+                    states[i][j] = true;
+                }
+            }
+            for (int j = 0; j <= w - weight[i]; j++) {
+                if (states[i - 1][j]) {
+                    //将第i个物品放入背包
+                    states[i][j + weight[i]] = true;
+                }
+            }
+        }
+
+        for (int i = w; i >= 0; i--) {
+            if (states[n - 1][i]) {
+                return i;
+            }
+        }
+
+        return 0;
+    }
+
+    public int knapsack2(int[] items, int w) {
+        int n = items.length;
+        boolean[] states = new boolean[w + 1];
+        states[0] = true;
+        if (items[0] <= w) {
+            states[items[0]] = true;
+        }
+
+        for (int i = 1; i < n; i++) {
+            for (int j = w - items[i]; j >= 0; j--) {
+                if (states[j]) {
+                    states[j + items[i]] = true;
+                }
+            }
+        }
+
+        for (int i = w; i >= 0; i--) {
+            if (states[i]) {
+                return i;
+            }
+        }
+
+        return 0;
+    }
 }
