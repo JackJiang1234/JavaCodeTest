@@ -22,9 +22,8 @@ public class Package {
         int[][] dp = new int[things.length][packageWeightCap];
 
         //初始化选第一个物品所有背包
-        int initValue = things[0].weight <= packageWeightCap ? things[0].value : 0;
         for (int i = 0; i < packageWeightCap; i++) {
-            dp[0][i] = initValue;
+            dp[0][i] = things[0].weight <= i + 1 ? things[0].value : 0;
         }
 
         //处理剩下的物品选择
@@ -56,9 +55,8 @@ public class Package {
         int[] dp = new int[packageWeightCap];
 
         //初始化选第一个物品所有背包
-        int initValue = things[0].weight <= packageWeightCap ? things[0].value : 0;
         for (int i = 0; i < packageWeightCap; i++) {
-            dp[i] = initValue;
+            dp[i] = things[0].weight <= i + 1 ? things[0].value : 0;
         }
 
         //dp转移方程 max(前一个单元格的价值， 选择当前商品的价值 + 剩余空间的价值)
@@ -86,9 +84,8 @@ public class Package {
         int[] dp = new int[packageWeightCap + 1];
 
         //初始化选第一个物品所有背包
-        int initValue = things[0].weight <= packageWeightCap ? things[0].value : 0;
         for (int i = 1; i < dp.length; i++) {
-            dp[i] = initValue;
+            dp[i] = things[0].weight <= i ? things[0].value : 0;
         }
 
         System.out.println(Arrays.toString(dp));
